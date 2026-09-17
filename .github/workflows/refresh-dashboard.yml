@@ -1,0 +1,41 @@
+name: Refresh NasBoard data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Covers 09:30 and 10:30 New York in both EDT and EST.
+    - cron: '30 13,14,15 * * 1-5'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Decide whether scheduled run is in refresh window
+        id: gate
+        shell: python
+        run: |
+          import os
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          event=os.environ.get('GITHUB_EVENT_NAME')
+          h=datetime.now(ZoneInfo('America/New_York')).hour
+          ok = event=='workflow_dispatch' or h in (9,10)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f: f.write(f'run={str(ok).lower()}\n')
+      - name: Refresh dashboard
+        if: steps.gate.outputs.run == 'true'
+        run: python scripts/refresh_dashboard.py
+      - name: Commit refreshed data
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name 'NasBoard Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/dashboard.json
+          git diff --cached --quiet || git commit -m 'Refresh CNBC market data'
+          git push
