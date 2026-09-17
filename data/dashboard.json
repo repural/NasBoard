@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 17, 2026 · 04:20 ET",
+  "updatedET": "Sep 17, 2026 · 04:27 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -54,20 +54,20 @@
     },
     {
       "factor": "10Y nominal yield",
-      "latest": "4.988% (-1.6 bp vs prev close)",
+      "latest": "4.986% (-1.8 bp vs prev close)",
       "direction": "Falling",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-17T04:20:03.000-0400",
-      "source": "CNBC intraday quote feed",
+      "freshness": "CNBC intraday · 2026-09-17T04:27:54.000-0400",
+      "source": "CNBC / Tradeweb quote feed",
       "explanation": "A high 10-year Treasury yield competes with equities and raises financing and valuation pressure on long-duration growth stocks."
     },
     {
       "factor": "Semiconductor leadership",
-      "latest": "NVDA, AMD and AVGO showing relative resilience",
-      "direction": "Leading",
-      "signal": "positive",
-      "freshness": "Initial snapshot",
-      "source": "Market quote feeds",
+      "latest": "NVDA +0.00% | AMD +0.00% | AVGO +0.00% | TSM +0.00% | QQQ +0.00% | basket vs QQQ +0.00 pp",
+      "direction": "In line with QQQ",
+      "signal": "mixed",
+      "freshness": "CNBC previous close · 2026-09-16",
+      "source": "CNBC quotes; equal-weight NVDA/AMD/AVGO/TSM vs QQQ calculation",
       "explanation": "Semiconductors are a key Nasdaq leadership group. Broad participation by major AI and compute names is supportive when it persists relative to QQQ."
     },
     {
@@ -108,20 +108,20 @@
     },
     {
       "factor": "2Y Treasury yield",
-      "latest": "4.707% (-2.0 bp vs prev close)",
+      "latest": "4.705% (-2.2 bp vs prev close)",
       "direction": "Falling",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-17T04:19:39.000-0400",
-      "source": "CNBC intraday quote feed",
+      "freshness": "CNBC intraday · 2026-09-17T04:27:16.000-0400",
+      "source": "CNBC / Tradeweb quote feed",
       "explanation": "The 2-year yield is particularly sensitive to expected Federal Reserve policy and provides a useful confirmation of changes in the expected rate path."
     },
     {
       "factor": "Nasdaq volatility (VXN / VIX)",
-      "latest": "Volatility remains an important risk check",
-      "direction": "Elevated / mixed",
+      "latest": "VXN 22.44 (+0.81%) | VIX 16.22 (-8.41%)",
+      "direction": "Rising",
       "signal": "mixed",
-      "freshness": "Delayed/public data",
-      "source": "Cboe/public market data",
+      "freshness": "CNBC previous close · 2026-09-16",
+      "source": "CNBC / Cboe quotes",
       "explanation": "Rising implied volatility indicates greater expected market movement and often accompanies risk reduction; falling volatility is generally more supportive."
     },
     {
@@ -129,8 +129,8 @@
       "latest": "Leadership is not uniformly broad",
       "direction": "Mixed",
       "signal": "mixed",
-      "freshness": "Initial snapshot",
-      "source": "Market quote feeds",
+      "freshness": "CNBC previous close · 2026-09-16 · mega-cap basket pending",
+      "source": "CNBC QQQ quote; mega-cap basket not yet connected",
       "explanation": "Because mega-cap technology companies carry large Nasdaq weights, synchronized strength or weakness can materially influence the index."
     },
     {
@@ -144,20 +144,20 @@
     },
     {
       "factor": "U.S. Dollar (DXY)",
-      "latest": "~100 area",
-      "direction": "Firm",
-      "signal": "negative",
-      "freshness": "Initial snapshot",
-      "source": "Public FX market data",
+      "latest": "DXY 100.236 (-0.02% vs prev close)",
+      "direction": "Falling",
+      "signal": "mixed",
+      "freshness": "CNBC intraday · 2026-09-17T04:27:59.000-0400",
+      "source": "CNBC / ICE quote feed",
       "explanation": "A stronger dollar can pressure the translated overseas revenue of multinational technology companies and often coincides with tighter global financial conditions."
     },
     {
       "factor": "Oil (WTI / Brent)",
-      "latest": "Elevated but direction-sensitive",
-      "direction": "Watch inflation impulse",
+      "latest": "WTI $101.86 (-0.56%) | Brent $104.90 (-0.88%)",
+      "direction": "Falling",
       "signal": "mixed",
-      "freshness": "Initial snapshot",
-      "source": "EIA / public commodity data",
+      "freshness": "CNBC intraday · 2026-09-17T04:17:55.000-0400",
+      "source": "CNBC futures quotes",
       "explanation": "Oil matters primarily through inflation expectations, consumer purchasing power and its potential influence on the Federal Reserve rate path."
     },
     {
