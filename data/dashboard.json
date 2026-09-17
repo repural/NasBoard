@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 17, 2026 · 04:12 ET",
+  "updatedET": "Sep 17, 2026 · 04:20 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -54,10 +54,10 @@
     },
     {
       "factor": "10Y nominal yield",
-      "latest": "4.990% (-1.4 bp vs prev close)",
+      "latest": "4.988% (-1.6 bp vs prev close)",
       "direction": "Falling",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-17T04:12:16.000-0400",
+      "freshness": "CNBC intraday · 2026-09-17T04:20:03.000-0400",
       "source": "CNBC intraday quote feed",
       "explanation": "A high 10-year Treasury yield competes with equities and raises financing and valuation pressure on long-duration growth stocks."
     },
@@ -108,10 +108,10 @@
     },
     {
       "factor": "2Y Treasury yield",
-      "latest": "4.709% (-1.8 bp vs prev close)",
+      "latest": "4.707% (-2.0 bp vs prev close)",
       "direction": "Falling",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-17T04:12:16.000-0400",
+      "freshness": "CNBC intraday · 2026-09-17T04:19:39.000-0400",
       "source": "CNBC intraday quote feed",
       "explanation": "The 2-year yield is particularly sensitive to expected Federal Reserve policy and provides a useful confirmation of changes in the expected rate path."
     },
