@@ -1,0 +1,35 @@
+name: Refresh NasBoard
+on:
+  workflow_dispatch:
+  schedule:
+    # Candidate UTC times covering 09:30 and 10:30 New York in both EDT and EST.
+    - cron: '30 13 * * 1-5'
+    - cron: '30 14 * * 1-5'
+    - cron: '30 15 * * 1-5'
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gate scheduled runs to 09:30/10:30 America/New_York
+        id: gate
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "run=yes" >> "$GITHUB_OUTPUT"; exit 0; fi
+          hm=$(TZ=America/New_York date +%H:%M)
+          if [ "$hm" = "09:30" ] || [ "$hm" = "10:30" ]; then echo "run=yes" >> "$GITHUB_OUTPUT"; else echo "run=no" >> "$GITHUB_OUTPUT"; fi
+      - name: Refresh data
+        if: steps.gate.outputs.run == 'yes'
+        run: python scripts/refresh.py
+      - name: Commit refreshed snapshot
+        if: steps.gate.outputs.run == 'yes'
+        shell: bash
+        run: |
+          git config user.name 'nasboard-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data/dashboard.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refresh dashboard data'
+          git push
