@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 17, 2026 · 03:59 ET",
+  "updatedET": "Sep 17, 2026 · 04:12 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -48,16 +48,16 @@
       "latest": "~2.60%",
       "direction": "Elevated",
       "signal": "negative",
-      "freshness": "STALE — refresh failed",
-      "source": "U.S. Treasury market data",
+      "freshness": "STALE — live source not yet connected",
+      "source": "Live real-yield source pending (FRED disabled)",
       "explanation": "Real yields are a direct discount-rate input for long-duration technology valuations. Elevated real yields constrain valuation expansion."
     },
     {
       "factor": "10Y nominal yield",
-      "latest": "~5.00%",
-      "direction": "Elevated",
+      "latest": "4.990% (-1.4 bp vs prev close)",
+      "direction": "Falling",
       "signal": "negative",
-      "freshness": "STALE — refresh failed",
+      "freshness": "CNBC intraday · 2026-09-17T04:12:16.000-0400",
       "source": "CNBC intraday quote feed",
       "explanation": "A high 10-year Treasury yield competes with equities and raises financing and valuation pressure on long-duration growth stocks."
     },
@@ -108,10 +108,10 @@
     },
     {
       "factor": "2Y Treasury yield",
-      "latest": "~4.7%",
-      "direction": "Elevated",
-      "signal": "mixed",
-      "freshness": "STALE — refresh failed",
+      "latest": "4.709% (-1.8 bp vs prev close)",
+      "direction": "Falling",
+      "signal": "negative",
+      "freshness": "CNBC intraday · 2026-09-17T04:12:16.000-0400",
       "source": "CNBC intraday quote feed",
       "explanation": "The 2-year yield is particularly sensitive to expected Federal Reserve policy and provides a useful confirmation of changes in the expected rate path."
     },
