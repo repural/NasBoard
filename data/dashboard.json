@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 18, 2026 · 14:27 ET",
+  "updatedET": "Sep 18, 2026 · 14:40 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -54,19 +54,19 @@
     },
     {
       "factor": "10Y nominal yield",
-      "latest": "5.000% (+5.3 bp vs prev close)",
+      "latest": "4.998% (+5.1 bp vs prev close)",
       "direction": "Rising",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T14:26:33.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:39:02.000-0400",
       "source": "CNBC / Tradeweb quote feed",
       "explanation": "A high 10-year Treasury yield competes with equities and raises financing and valuation pressure on long-duration growth stocks."
     },
     {
       "factor": "Semiconductor leadership",
-      "latest": "NVDA +0.00% | AMD -0.23% | AVGO +1.98% | TSM -0.19% | QQQ +0.13% | basket vs QQQ +0.26 pp",
+      "latest": "NVDA +0.03% | AMD -0.24% | AVGO +1.89% | TSM -0.08% | QQQ +0.15% | basket vs QQQ +0.25 pp",
       "direction": "Leading QQQ",
       "signal": "positive",
-      "freshness": "CNBC intraday · 2026-09-18T14:27:11.542-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:40:40.673-0400",
       "source": "CNBC quotes; equal-weight NVDA/AMD/AVGO/TSM vs QQQ calculation",
       "explanation": "Semiconductors are a key Nasdaq leadership group. Broad participation by major AI and compute names is supportive when it persists relative to QQQ."
     },
@@ -81,11 +81,11 @@
     },
     {
       "factor": "Market breadth",
-      "latest": "Nasdaq breadth proxy: 7/20 advancing (35%) · 12 declining · 1 flat",
-      "direction": "Weakening",
-      "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T14:27:11.542-0400",
-      "source": "CNBC quotes; 20-stock large/liquid Nasdaq breadth proxy (not full Nasdaq-100 breadth)",
+      "latest": "Nasdaq-100 breadth: 44/102 advancing (43%) · 58 declining · 0 flat",
+      "direction": "Mixed",
+      "signal": "mixed",
+      "freshness": "CNBC intraday · 2026-09-18T14:40:40.673-0400",
+      "source": "CNBC quotes; Nasdaq-100 constituent day breadth",
       "explanation": "A rally supported by a larger share of Nasdaq stocks is healthier than one carried by only a few mega-cap names."
     },
     {
@@ -108,28 +108,28 @@
     },
     {
       "factor": "2Y Treasury yield",
-      "latest": "4.737% (+4.7 bp vs prev close)",
+      "latest": "4.739% (+4.9 bp vs prev close)",
       "direction": "Rising",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T14:24:21.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:40:03.000-0400",
       "source": "CNBC / Tradeweb quote feed",
       "explanation": "The 2-year yield is particularly sensitive to expected Federal Reserve policy and provides a useful confirmation of changes in the expected rate path."
     },
     {
       "factor": "Nasdaq volatility (VXN / VIX)",
-      "latest": "VXN 19.65 (-1.55%) | VIX 15.16 (-1.81%)",
+      "latest": "VXN 19.63 (-1.65%) | VIX 15.08 (-2.33%)",
       "direction": "Falling",
       "signal": "mixed",
-      "freshness": "CNBC intraday · 2026-09-18T14:12:01.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:25:31.000-0400",
       "source": "CNBC / Cboe quotes",
       "explanation": "Rising implied volatility indicates greater expected market movement and often accompanies risk reduction; falling volatility is generally more supportive."
     },
     {
       "factor": "Mega-cap leadership",
-      "latest": "7-stock basket -0.21% | 2/7 positive | QQQ +0.13% | relative -0.34 pp",
+      "latest": "7-stock basket -0.17% | 3/7 positive | QQQ +0.15% | relative -0.32 pp",
       "direction": "Lagging QQQ",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T14:27:11.542-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:40:40.673-0400",
       "source": "CNBC quotes; equal-weight AAPL/MSFT/AMZN/GOOGL/META/NVDA/TSLA basket vs QQQ",
       "explanation": "Because mega-cap technology companies carry large Nasdaq weights, synchronized strength or weakness can materially influence the index."
     },
@@ -144,19 +144,19 @@
     },
     {
       "factor": "U.S. Dollar (DXY)",
-      "latest": "DXY 100.237 (-0.01% vs prev close)",
+      "latest": "DXY 100.234 (-0.01% vs prev close)",
       "direction": "Falling",
       "signal": "mixed",
-      "freshness": "CNBC intraday · 2026-09-18T14:27:10.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:40:40.000-0400",
       "source": "CNBC / ICE quote feed",
       "explanation": "A stronger dollar can pressure the translated overseas revenue of multinational technology companies and often coincides with tighter global financial conditions."
     },
     {
       "factor": "Oil (WTI / Brent)",
-      "latest": "WTI $100.25 (-1.63%) | Brent $103.61 (-1.15%)",
+      "latest": "WTI $100.03 (-1.84%) | Brent $103.68 (-1.09%)",
       "direction": "Falling",
       "signal": "positive",
-      "freshness": "CNBC intraday · 2026-09-18T14:17:06.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T14:30:38.000-0400",
       "source": "CNBC futures quotes",
       "explanation": "Oil matters primarily through inflation expectations, consumer purchasing power and its potential influence on the Federal Reserve rate path."
     },
