@@ -142,6 +142,30 @@ def main():
         for name in ('10Y nominal yield','2Y Treasury yield','Semiconductor leadership','Nasdaq volatility (VXN / VIX)','U.S. Dollar (DXY)','Oil (WTI / Brent)'):
             next(x for x in rows if x['factor']==name)['freshness']='STALE — CNBC refresh failed'
 
+    # Scheduled macro/Fed event risk from official 2026 calendars. This is event timing, not a market-implied probability model.
+    events=[
+      (datetime.datetime(2026,9,29,10,0,tzinfo=NY),'JOLTS (Aug)','BLS'),
+      (datetime.datetime(2026,9,30,8,30,tzinfo=NY),'PCE / Personal Income & Outlays (Aug)','BEA'),
+      (datetime.datetime(2026,10,2,8,30,tzinfo=NY),'Employment Situation (Sep)','BLS'),
+      (datetime.datetime(2026,10,7,14,0,tzinfo=NY),'FOMC Minutes (Sep 15–16 meeting)','Federal Reserve'),
+      (datetime.datetime(2026,10,14,8,30,tzinfo=NY),'CPI (Sep)','BLS'),
+      (datetime.datetime(2026,10,15,8,30,tzinfo=NY),'PPI (Sep)','BLS'),
+      (datetime.datetime(2026,10,27,0,0,tzinfo=NY),'FOMC meeting begins (Oct 27–28)','Federal Reserve'),
+      (datetime.datetime(2026,10,28,14,0,tzinfo=NY),'FOMC decision / press conference','Federal Reserve'),
+      (datetime.datetime(2026,10,29,8,30,tzinfo=NY),'GDP advance Q3 + PCE (Sep)','BEA'),
+      (datetime.datetime(2026,10,30,8,30,tzinfo=NY),'Employment Cost Index Q3','BLS')
+    ]
+    future=[e for e in events if e[0]>now]
+    if future:
+        et,name,agency=min(future,key=lambda e:e[0]); hours=(et-now).total_seconds()/3600
+        urgency='High event risk' if hours<=24 else ('Event approaching' if hours<=72 else 'Scheduled')
+        esig='negative' if hours<=24 else 'mixed'
+        setrow(rows,'Economic / inflation data',f'Next: {name} · {et.strftime("%b %d, %H:%M ET")}',urgency,esig,f'Official calendar · checked {now.strftime("%Y-%m-%d %H:%M ET")}',f'{agency} official release calendar')
+    fomc=[e for e in events if e[2]=='Federal Reserve' and e[0]>now]
+    if fomc:
+        et,name,_=min(fomc,key=lambda e:e[0])
+        setrow(rows,'Fed path / rate expectations',f'Next Fed catalyst: {name} · {et.strftime("%b %d, %H:%M ET")}','Event risk','mixed',f'Federal Reserve calendar · checked {now.strftime("%Y-%m-%d %H:%M ET")}','Federal Reserve FOMC calendar; market-implied rate probabilities not yet connected')
+
     # Official Treasury TIPS par real yield curve: daily, not intraday.
     real=next(x for x in rows if x['factor']=='10Y real yield')
     try:
