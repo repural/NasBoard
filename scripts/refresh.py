@@ -5,7 +5,9 @@ ROOT=os.path.dirname(os.path.dirname(__file__))
 PATH=os.path.join(ROOT,'data','dashboard.json')
 NY=ZoneInfo('America/New_York')
 CNBC_BASE='https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol'
-MEGACAPS=['AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA']\nBREADTH=['AAPL','MSFT','NVDA','AMZN','GOOGL','META','AVGO','TSLA','COST','NFLX','AMD','ADBE','CSCO','PEP','TMUS','INTU','AMGN','TXN','QCOM','BKNG']\nSYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1']+MEGACAPS+BREADTH))
+MEGACAPS=['AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA']
+BREADTH=['AAPL','MSFT','NVDA','AMZN','GOOGL','META','AVGO','TSLA','COST','NFLX','AMD','ADBE','CSCO','PEP','TMUS','INTU','AMGN','TXN','QCOM','BKNG']
+SYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1']+MEGACAPS+BREADTH))
 
 def cnbc_quotes(symbols):
     params={'symbols':'|'.join(symbols),'requestMethod':'itv','noform':'1','partnerId':'2','fund':'1','exthrs':'1','output':'json','events':'1'}
@@ -30,7 +32,11 @@ def fresh(q):
     # CNBC sometimes returns only YYYY-MM-DD for equities outside their active quote session.
     return ('CNBC previous close · '+t) if len(str(t))==10 else ('CNBC intraday · '+str(t))
 
-def is_intraday(q,now):\n    t=str(q.get('last_time') or q.get('last_timedate') or '')\n    return len(t)>10 and t[:10]==now.strftime('%Y-%m-%d')\n\ndef setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed'):
+def is_intraday(q,now):
+    t=str(q.get('last_time') or q.get('last_timedate') or '')
+    return len(t)>10 and t[:10]==now.strftime('%Y-%m-%d')
+
+def setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed'):
     r=next(x for x in rows if x['factor']==name); r.update(latest=latest,direction=direction,signal=signal,freshness=freshness,source=source)
 
 def main():
