@@ -6,7 +6,7 @@ PATH=os.path.join(ROOT,'data','dashboard.json')
 NY=ZoneInfo('America/New_York')
 CNBC_BASE='https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol'
 MEGACAPS=['AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA']
-BREADTH=['AAPL','MSFT','NVDA','AMZN','GOOGL','META','AVGO','TSLA','COST','NFLX','AMD','ADBE','CSCO','PEP','TMUS','INTU','AMGN','TXN','QCOM','BKNG']
+BREADTH=['NVDA','AAPL','MU','MSFT','AMD','AMZN','TSLA','GOOGL','INTC','GOOG','AVGO','META','AMAT','WMT','LRCX','CSCO','COST','KLAC','SNDK','NFLX','PANW','TXN','PLTR','MRVL','LIN','WDC','STX','AMGN','QCOM','CRWD','ADI','PEP','ASML','TMUS','APP','GILD','ARM','ISRG','SHOP','BKNG','VRTX','SBUX','FTNT','CDNS','MAR','MNST','CEG','ADP','CSX','CMCSA','DDOG','MELI','SNPS','ADBE','ALAB','ORLY','DASH','TER','AEP','MDLZ','INTU','NXPI','HON','HONA','ROST','CTAS','MPWR','WBD','LITE','REGN','PCAR','NBIS','ABNB','RKLB','FAST','BKR','PDD','XEL','FANG','MCHP','FER','EXC','TTWO','AXON','ODFL','CCEP','CRWV','KDP','IDXX','ADSK','ALNY','PYPL','PAYX','ROP','TRI','GEHC','MSTR','KHC','CPRT','DXCM','WDAY','SPCX']
 SYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1']+MEGACAPS+BREADTH))
 
 def cnbc_quotes(symbols):
@@ -78,17 +78,17 @@ def main():
         else:
             setrow(rows,'Mega-cap leadership','Awaiting current-session mega-cap quotes','Awaiting session','mixed',fresh(q['QQQ']) if 'QQQ' in q else 'STALE — QQQ unavailable','CNBC quotes; calculation suppressed outside current equity session')
 
-        # Nasdaq breadth proxy: 20 large/liquid Nasdaq names, explicitly not full Nasdaq-100 breadth.
+        # Nasdaq-100 day breadth using the current constituent set. Multiple share classes mean the quote count can exceed 100.
         if equity_live:
             bm={sym:pct(q[sym]) for sym in BREADTH if sym in q and is_intraday(q[sym],now)}
             vals=[v for v in bm.values() if v is not None]
-            if len(vals)>=15:
+            if len(vals)>=80:
                 adv=sum(v>0 for v in vals); dec=sum(v<0 for v in vals); flat=len(vals)-adv-dec; ratio=adv/len(vals)*100
                 sig='positive' if ratio>=65 else ('negative' if ratio<=35 else 'mixed')
                 direction='Broadening' if ratio>=65 else ('Weakening' if ratio<=35 else 'Mixed')
-                setrow(rows,'Market breadth',f'Nasdaq breadth proxy: {adv}/{len(vals)} advancing ({ratio:.0f}%) · {dec} declining · {flat} flat',direction,sig,fresh(q['QQQ']),'CNBC quotes; 20-stock large/liquid Nasdaq breadth proxy (not full Nasdaq-100 breadth)')
+                setrow(rows,'Market breadth',f'Nasdaq-100 breadth: {adv}/{len(vals)} advancing ({ratio:.0f}%) · {dec} declining · {flat} flat',direction,sig,fresh(q['QQQ']),'CNBC quotes; Nasdaq-100 constituent day breadth')
         else:
-            setrow(rows,'Market breadth','Awaiting current-session quotes for 20-stock Nasdaq breadth proxy','Awaiting session','mixed',fresh(q['QQQ']) if 'QQQ' in q else 'STALE — QQQ unavailable','CNBC quotes; 20-stock breadth proxy; calculation suppressed outside current equity session')
+            setrow(rows,'Market breadth','Awaiting current-session quotes for Nasdaq-100 breadth','Awaiting session','mixed',fresh(q['QQQ']) if 'QQQ' in q else 'STALE — QQQ unavailable','CNBC quotes; Nasdaq-100 constituent breadth; calculation suppressed outside current equity session')
 
         # Volatility: VXN is Nasdaq-specific; VIX is included as confirmation.
         vx=q.get('.VXN'); vi=q.get('.VIX')
