@@ -5,7 +5,7 @@ ROOT=os.path.dirname(os.path.dirname(__file__))
 PATH=os.path.join(ROOT,'data','dashboard.json')
 NY=ZoneInfo('America/New_York')
 CNBC_BASE='https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol'
-SYMBOLS=['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1']
+MEGACAPS=['AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA']\nBREADTH=['AAPL','MSFT','NVDA','AMZN','GOOGL','META','AVGO','TSLA','COST','NFLX','AMD','ADBE','CSCO','PEP','TMUS','INTU','AMGN','TXN','QCOM','BKNG']\nSYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1']+MEGACAPS+BREADTH))
 
 def cnbc_quotes(symbols):
     params={'symbols':'|'.join(symbols),'requestMethod':'itv','noform':'1','partnerId':'2','fund':'1','exthrs':'1','output':'json','events':'1'}
@@ -30,7 +30,7 @@ def fresh(q):
     # CNBC sometimes returns only YYYY-MM-DD for equities outside their active quote session.
     return ('CNBC previous close · '+t) if len(str(t))==10 else ('CNBC intraday · '+str(t))
 
-def setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed'):
+def is_intraday(q,now):\n    t=str(q.get('last_time') or q.get('last_timedate') or '')\n    return len(t)>10 and t[:10]==now.strftime('%Y-%m-%d')\n\ndef setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed'):
     r=next(x for x in rows if x['factor']==name); r.update(latest=latest,direction=direction,signal=signal,freshness=freshness,source=source)
 
 def main():
@@ -44,17 +44,45 @@ def main():
             sig='negative' if v>=4.5 else ('mixed' if v>=4.0 else 'positive')
             setrow(rows,name,f'{v:.3f}%'+(f' ({bp:+.1f} bp vs prev close)' if bp is not None else ''),'Rising' if bp and bp>0 else ('Falling' if bp and bp<0 else 'Flat'),sig,fresh(x),'CNBC / Tradeweb quote feed')
 
-        # Semiconductor leadership versus QQQ. This is explicitly a daily/previous-close relative-strength check when CNBC has not supplied an intraday equity timestamp.
-        semis=[('NVDA','NVDA'),('AMD','AMD'),('AVGO','AVGO'),('TSM','TSM')]
-        moves={label:pct(q[sym]) for sym,label in semis if sym in q}
-        qqq=pct(q['QQQ']) if 'QQQ' in q else None
-        valid=[v for v in moves.values() if v is not None]
-        if valid and qqq is not None:
-            avg=sum(valid)/len(valid); rel=avg-qqq
-            sig='positive' if rel>0.25 else ('negative' if rel<-0.25 else 'mixed')
-            direction='Leading QQQ' if rel>0.25 else ('Lagging QQQ' if rel<-0.25 else 'In line with QQQ')
-            text=' | '.join(f'{k} {v:+.2f}%' for k,v in moves.items())+f' | QQQ {qqq:+.2f}% | basket vs QQQ {rel:+.2f} pp'
-            setrow(rows,'Semiconductor leadership',text,direction,sig,fresh(q['QQQ']),'CNBC quotes; equal-weight NVDA/AMD/AVGO/TSM vs QQQ calculation')
+        # Leadership calculations only run when CNBC supplies current-session equity timestamps.
+        semis=['NVDA','AMD','AVGO','TSM']
+        equity_live='QQQ' in q and is_intraday(q['QQQ'],now)
+        if equity_live and all(sym in q and is_intraday(q[sym],now) for sym in semis):
+            moves={sym:pct(q[sym]) for sym in semis}; qqq=pct(q['QQQ'])
+            valid=[v for v in moves.values() if v is not None]
+            if valid and qqq is not None:
+                avg=sum(valid)/len(valid); rel=avg-qqq
+                sig='positive' if rel>0.25 else ('negative' if rel<-0.25 else 'mixed')
+                direction='Leading QQQ' if rel>0.25 else ('Lagging QQQ' if rel<-0.25 else 'In line with QQQ')
+                text=' | '.join(f'{k} {v:+.2f}%' for k,v in moves.items())+f' | QQQ {qqq:+.2f}% | basket vs QQQ {rel:+.2f} pp'
+                setrow(rows,'Semiconductor leadership',text,direction,sig,fresh(q['QQQ']),'CNBC quotes; equal-weight NVDA/AMD/AVGO/TSM vs QQQ calculation')
+        else:
+            stamp=(q.get('QQQ',{}).get('last_time') or q.get('QQQ',{}).get('last_timedate') or 'unavailable')
+            setrow(rows,'Semiconductor leadership',f'Awaiting current-session equity quotes — latest equity stamp {stamp}','Awaiting session','mixed',fresh(q['QQQ']) if 'QQQ' in q else 'STALE — QQQ unavailable','CNBC quotes; calculation suppressed when only previous-close data are available')
+
+        # Mega-cap leadership: equal-weight basket versus QQQ, current session only.
+        if equity_live:
+            mm={sym:pct(q[sym]) for sym in MEGACAPS if sym in q and is_intraday(q[sym],now)}
+            vals=[v for v in mm.values() if v is not None]; qqq=pct(q['QQQ'])
+            if len(vals)>=5 and qqq is not None:
+                avg=sum(vals)/len(vals); rel=avg-qqq; pos=sum(v>0 for v in vals)
+                sig='positive' if rel>0.20 and pos>=4 else ('negative' if rel<-0.20 and pos<=3 else 'mixed')
+                direction='Leading QQQ' if rel>0.20 else ('Lagging QQQ' if rel<-0.20 else 'In line with QQQ')
+                setrow(rows,'Mega-cap leadership',f'{len(vals)}-stock basket {avg:+.2f}% | {pos}/{len(vals)} positive | QQQ {qqq:+.2f}% | relative {rel:+.2f} pp',direction,sig,fresh(q['QQQ']),'CNBC quotes; equal-weight AAPL/MSFT/AMZN/GOOGL/META/NVDA/TSLA basket vs QQQ')
+        else:
+            setrow(rows,'Mega-cap leadership','Awaiting current-session mega-cap quotes','Awaiting session','mixed',fresh(q['QQQ']) if 'QQQ' in q else 'STALE — QQQ unavailable','CNBC quotes; calculation suppressed outside current equity session')
+
+        # Nasdaq breadth proxy: 20 large/liquid Nasdaq names, explicitly not full Nasdaq-100 breadth.
+        if equity_live:
+            bm={sym:pct(q[sym]) for sym in BREADTH if sym in q and is_intraday(q[sym],now)}
+            vals=[v for v in bm.values() if v is not None]
+            if len(vals)>=15:
+                adv=sum(v>0 for v in vals); dec=sum(v<0 for v in vals); flat=len(vals)-adv-dec; ratio=adv/len(vals)*100
+                sig='positive' if ratio>=65 else ('negative' if ratio<=35 else 'mixed')
+                direction='Broadening' if ratio>=65 else ('Weakening' if ratio<=35 else 'Mixed')
+                setrow(rows,'Market breadth',f'Nasdaq breadth proxy: {adv}/{len(vals)} advancing ({ratio:.0f}%) · {dec} declining · {flat} flat',direction,sig,fresh(q['QQQ']),'CNBC quotes; 20-stock large/liquid Nasdaq breadth proxy (not full Nasdaq-100 breadth)')
+        else:
+            setrow(rows,'Market breadth','Awaiting current-session quotes for 20-stock Nasdaq breadth proxy','Awaiting session','mixed',fresh(q['QQQ']) if 'QQQ' in q else 'STALE — QQQ unavailable','CNBC quotes; 20-stock breadth proxy; calculation suppressed outside current equity session')
 
         # Volatility: VXN is Nasdaq-specific; VIX is included as confirmation.
         vx=q.get('.VXN'); vi=q.get('.VIX')
@@ -77,10 +105,6 @@ def main():
             sig='positive' if avg<-1 else ('negative' if avg>1 else 'mixed')
             setrow(rows,'Oil (WTI / Brent)',f'WTI ${wv:.2f} ({wm:+.2f}%) | Brent ${bv:.2f} ({bm:+.2f}%)','Falling' if avg<0 else ('Rising' if avg>0 else 'Flat'),sig,fresh(w),'CNBC futures quotes')
 
-        # Mega-cap leadership: QQQ itself is now live/previous-close sourced, but we do not yet have the mega-cap basket wired. Avoid pretending otherwise.
-        if 'QQQ' in q:
-            qm=pct(q['QQQ']); r=next(x for x in rows if x['factor']=='Mega-cap leadership')
-            r['freshness']=fresh(q['QQQ'])+' · mega-cap basket pending'; r['source']='CNBC QQQ quote; mega-cap basket not yet connected'
     except Exception as e:
         print('CNBC refresh failed:',repr(e))
         for name in ('10Y nominal yield','2Y Treasury yield','Semiconductor leadership','Nasdaq volatility (VXN / VIX)','U.S. Dollar (DXY)','Oil (WTI / Brent)'):
