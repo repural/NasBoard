@@ -1,4 +1,4 @@
-import json, urllib.request, urllib.parse, datetime, os
+import json, urllib.request, urllib.parse, datetime, os, xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
 ROOT=os.path.dirname(os.path.dirname(__file__))
@@ -7,7 +7,7 @@ NY=ZoneInfo('America/New_York')
 CNBC_BASE='https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol'
 MEGACAPS=['AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA']
 BREADTH=['NVDA','AAPL','MU','MSFT','AMD','AMZN','TSLA','GOOGL','INTC','GOOG','AVGO','META','AMAT','WMT','LRCX','CSCO','COST','KLAC','SNDK','NFLX','PANW','TXN','PLTR','MRVL','LIN','WDC','STX','AMGN','QCOM','CRWD','ADI','PEP','ASML','TMUS','APP','GILD','ARM','ISRG','SHOP','BKNG','VRTX','SBUX','FTNT','CDNS','MAR','MNST','CEG','ADP','CSX','CMCSA','DDOG','MELI','SNPS','ADBE','ALAB','ORLY','DASH','TER','AEP','MDLZ','INTU','NXPI','HON','HONA','ROST','CTAS','MPWR','WBD','LITE','REGN','RBLX','NBIS','ABNB','RKLB','FAST','BKR','PDD','XEL','FANG','MCHP','FER','EXC','TTWO','AXON','ODFL','CCEP','CRWV','KDP','IDXX','ADSK','ALNY','PYPL','PAYX','ROP','TRI','GEHC','MSTR','KHC','CPRT','DXCM','WDAY','SPCX']
-SYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1']+MEGACAPS+BREADTH))
+SYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1','HYG','LQD']+MEGACAPS+BREADTH))
 
 def cnbc_quotes(symbols):
     params={'symbols':'|'.join(symbols),'requestMethod':'itv','noform':'1','partnerId':'2','fund':'1','exthrs':'1','output':'json','events':'1'}
@@ -38,6 +38,27 @@ def is_intraday(q,now):
 
 def setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed'):
     r=next(x for x in rows if x['factor']==name); r.update(latest=latest,direction=direction,signal=signal,freshness=freshness,source=source)
+
+def treasury_10y_real(year):
+    url='https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_real_yield_curve&field_tdr_date_value='+str(year)
+    req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'application/xml,text/xml,*/*'})
+    with urllib.request.urlopen(req,timeout=20) as r: raw=r.read()
+    root=ET.fromstring(raw); points=[]
+    for entry in root.iter():
+        if not str(entry.tag).endswith('entry'): continue
+        props=None
+        for x in entry.iter():
+            if str(x.tag).endswith('properties'): props=x; break
+        if props is None: continue
+        vals={str(x.tag).split('}')[-1]: (x.text or '').strip() for x in props}
+        date=next((v for k,v in vals.items() if k.lower()=='new_date'),None)
+        y10=next((v for k,v in vals.items() if '10year' in k.lower() and 'real' in k.lower()),None)
+        if date and y10:
+            try: points.append((datetime.datetime.fromisoformat(date.replace('Z','+00:00')).date(),float(y10)))
+            except: pass
+    if not points: raise ValueError('Treasury 10Y real yield not found in XML feed')
+    points.sort(); return points[-1]
+
 
 def main():
     with open(PATH,encoding='utf-8') as f:d=json.load(f)
@@ -98,6 +119,16 @@ def main():
             direction='Falling' if vxnp is not None and vxnp<0 else ('Rising' if vxnp is not None and vxnp>0 else 'Flat')
             setrow(rows,'Nasdaq volatility (VXN / VIX)',f'VXN {vxn:.2f} ({vxnp:+.2f}%) | VIX {vix:.2f} ({vixp:+.2f}%)',direction,sig,fresh(vx),'CNBC / Cboe quotes')
 
+        # Credit conditions: HYG risk credit versus investment-grade LQD confirmation.
+        hy=q.get('HYG'); lq=q.get('LQD')
+        if hy and lq:
+            hm=pct(hy); lm=pct(lq)
+            if hm is not None and lm is not None:
+                rel=hm-lm
+                sig='positive' if rel>=0.25 else ('negative' if rel<=-0.25 else 'mixed')
+                direction='Easing / risk-on' if rel>=0.25 else ('Tightening / risk-off' if rel<=-0.25 else 'Stable')
+                setrow(rows,'Credit conditions',f'HYG {hm:+.2f}% | LQD {lm:+.2f}% | HYG vs LQD {rel:+.2f} pp',direction,sig,fresh(hy),'CNBC quotes; HYG high-yield ETF vs LQD investment-grade ETF proxy')
+
         # Dollar
         dx=q.get('.DXY')
         if dx:
@@ -116,7 +147,15 @@ def main():
         for name in ('10Y nominal yield','2Y Treasury yield','Semiconductor leadership','Nasdaq volatility (VXN / VIX)','U.S. Dollar (DXY)','Oil (WTI / Brent)'):
             next(x for x in rows if x['factor']==name)['freshness']='STALE — CNBC refresh failed'
 
-    real=next(x for x in rows if x['factor']=='10Y real yield'); real['freshness']='STALE — live source not yet connected'; real['source']='Live real-yield source pending (FRED disabled)'
+    # Official Treasury TIPS par real yield curve: daily, not intraday.
+    real=next(x for x in rows if x['factor']=='10Y real yield')
+    try:
+        rd,rv=treasury_10y_real(now.year)
+        real.update(latest=f'{rv:.2f}%',direction='Elevated' if rv>=2.0 else ('Moderate' if rv>=1.0 else 'Low'),signal='negative' if rv>=2.0 else ('mixed' if rv>=1.0 else 'positive'),freshness=f'U.S. Treasury daily · {rd.isoformat()}',source='U.S. Department of the Treasury — Daily Treasury Par Real Yield Curve Rates (10Y TIPS)')
+    except Exception as e:
+        print('Treasury real-yield refresh failed:',repr(e))
+        real['freshness']='STALE — U.S. Treasury daily feed refresh failed'
+        real['source']='U.S. Department of the Treasury — Daily Treasury Par Real Yield Curve Rates (10Y TIPS)'
     d['updatedET']=now.strftime('%b %d, %Y · %H:%M ET'); d['nextUpdateET']='09:30 / 10:30 ET on trading weekdays'
     with open(PATH,'w',encoding='utf-8') as f:json.dump(d,f,ensure_ascii=False,indent=2)
 
