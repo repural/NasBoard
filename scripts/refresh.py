@@ -44,21 +44,16 @@ def treasury_10y_real(year):
     req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'application/xml,text/xml,*/*'})
     with urllib.request.urlopen(req,timeout=20) as r: raw=r.read()
     root=ET.fromstring(raw); points=[]
-    for entry in root.iter():
-        if not str(entry.tag).endswith('entry'): continue
-        props=None
-        for x in entry.iter():
-            if str(x.tag).endswith('properties'): props=x; break
-        if props is None: continue
-        vals={str(x.tag).split('}')[-1]: (x.text or '').strip() for x in props}
-        date=next((v for k,v in vals.items() if k.lower()=='new_date'),None)
-        y10=next((v for k,v in vals.items() if '10year' in k.lower() and 'real' in k.lower()),None)
+    for props in root.iter():
+        if not str(props.tag).endswith('properties'): continue
+        vals={str(x.tag).split('}')[-1]: (x.text or '').strip() for x in list(props)}
+        date=vals.get('NEW_DATE') or vals.get('new_date')
+        y10=vals.get('TC_10YEAR') or vals.get('tc_10year')
         if date and y10:
             try: points.append((datetime.datetime.fromisoformat(date.replace('Z','+00:00')).date(),float(y10)))
             except: pass
-    if not points: raise ValueError('Treasury 10Y real yield not found in XML feed')
+    if not points: raise ValueError('Treasury TC_10YEAR real yield not found in XML feed')
     points.sort(); return points[-1]
-
 
 def main():
     with open(PATH,encoding='utf-8') as f:d=json.load(f)
