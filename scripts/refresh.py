@@ -174,14 +174,14 @@ def main():
         # Equity P/C is the cleaner directional-sentiment component; index flow is often institutional hedging.
         sig='negative' if eq>=0.90 else ('positive' if eq<=0.55 else 'mixed')
         direction='Defensive / put-heavy' if eq>=0.90 else ('Call-heavy' if eq<=0.55 else 'Balanced')
-        setrow(rows,'Positioning / dealer gamma',
+        setrow(rows,'Options positioning / sentiment',
           f'Equity P/C {eq:.2f} | Index P/C {ix:.2f} | Total P/C {tot:.2f}',
           direction,sig,
           f'Cboe daily · checked {now.strftime("%Y-%m-%d %H:%M ET")}',
           'Cboe Daily Market Statistics — options volume put/call ratios; not dealer gamma exposure')
     except Exception as e:
         print('Cboe put/call refresh failed:',repr(e))
-        r=next(x for x in rows if x['factor']=='Positioning / dealer gamma')
+        r=next(x for x in rows if x['factor']=='Options positioning / sentiment')
         r['freshness']='STALE — Cboe put/call refresh failed'
         r['source']='Cboe Daily Market Statistics — options volume put/call ratios'
 
