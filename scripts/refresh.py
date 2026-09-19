@@ -7,7 +7,7 @@ NY=ZoneInfo('America/New_York')
 CNBC_BASE='https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol'
 MEGACAPS=['AAPL','MSFT','AMZN','GOOGL','META','NVDA','TSLA']
 BREADTH=['NVDA','AAPL','MU','MSFT','AMD','AMZN','TSLA','GOOGL','INTC','GOOG','AVGO','META','AMAT','WMT','LRCX','CSCO','COST','KLAC','SNDK','NFLX','PANW','TXN','PLTR','MRVL','LIN','WDC','STX','AMGN','QCOM','CRWD','ADI','PEP','ASML','TMUS','APP','GILD','ARM','ISRG','SHOP','BKNG','VRTX','SBUX','FTNT','CDNS','MAR','MNST','CEG','ADP','CSX','CMCSA','DDOG','MELI','SNPS','ADBE','ALAB','ORLY','DASH','TER','AEP','MDLZ','INTU','NXPI','HON','HONA','ROST','CTAS','MPWR','WBD','LITE','REGN','RBLX','NBIS','ABNB','RKLB','FAST','BKR','PDD','XEL','FANG','MCHP','FER','EXC','TTWO','AXON','ODFL','CCEP','CRWV','KDP','IDXX','ADSK','ALNY','PYPL','PAYX','ROP','TRI','GEHC','MSTR','KHC','CPRT','DXCM','WDAY','SPCX']
-SYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1','HYG','LQD']+MEGACAPS+BREADTH))
+SYMBOLS=list(dict.fromkeys(['US10Y','US2Y','QQQ','NVDA','AMD','AVGO','TSM','.VIX','.VXN','.DXY','@CL.1','@LCO.1','HYG','LQD','S5FI']+MEGACAPS+BREADTH))
 
 def cnbc_quotes(symbols):
     params={'symbols':'|'.join(symbols),'requestMethod':'itv','noform':'1','partnerId':'2','fund':'1','exthrs':'1','output':'json','events':'1'}
@@ -60,6 +60,14 @@ def main():
     now=datetime.datetime.now(NY); rows=d['rows']
     try:
         q=cnbc_quotes(SYMBOLS)
+        # S5FI probe: S&P 500 stocks above 50-day moving average breadth index.
+        # Keep this as a source test until CNBC symbol availability is verified in a real Action run.
+        if 'S5FI' in q:
+            sx=q['S5FI']
+            print('S5FI CNBC probe:', json.dumps({k:sx.get(k) for k in ['symbol','name','last','previous_day_closing','last_time','last_timedate','code']}))
+        else:
+            print('S5FI CNBC probe: symbol not returned')
+
         # Treasury yields
         for sym,name in [('US10Y','10Y nominal yield'),('US2Y','2Y Treasury yield')]:
             x=q[sym]; v=num(x.get('last')); p=num(x.get('previous_day_closing')); bp=(v-p)*100 if v is not None and p is not None else None
