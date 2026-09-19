@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 19, 2026 · 02:14 ET",
+  "updatedET": "Sep 19, 2026 · 02:20 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -39,9 +39,9 @@
       "latest": "Next Fed catalyst: FOMC Minutes (Sep 15–16 meeting) · Oct 07, 14:00 ET",
       "direction": "Event risk",
       "signal": "mixed",
-      "freshness": "Federal Reserve calendar · checked 2026-09-19 02:14 ET",
+      "freshness": "Federal Reserve calendar · checked 2026-09-19 02:20 ET",
       "source": "Federal Reserve FOMC calendar; market-implied rate probabilities not yet connected",
-      "explanation": "Higher expected policy rates increase the discount rate applied to growth-company cash flows and are therefore a Nasdaq valuation headwind."
+      "explanation": "Next Fed catalyst: FOMC Minutes (Sep 15–16 meeting) · Oct 07, 14:00 ET. This row currently tracks the next scheduled Fed catalyst rather than market-implied cut/hike probabilities. The upcoming event creates policy-rate event risk for Nasdaq; current classification is neutral/mixed."
     },
     {
       "factor": "10Y real yield",
@@ -50,7 +50,7 @@
       "signal": "negative",
       "freshness": "U.S. Treasury daily · 2026-09-18",
       "source": "U.S. Department of the Treasury — Daily Treasury Par Real Yield Curve Rates (10Y TIPS)",
-      "explanation": "Real yields are a direct discount-rate input for long-duration technology valuations. Elevated real yields constrain valuation expansion."
+      "explanation": "2.68%. This is the inflation-adjusted long-term discount rate. A real yield at the current level is classified as elevated and a headwind for long-duration Nasdaq valuations because future earnings are discounted at a higher real rate."
     },
     {
       "factor": "10Y nominal yield",
@@ -59,7 +59,7 @@
       "signal": "negative",
       "freshness": "CNBC intraday · 2026-09-18T17:05:00.000-0400",
       "source": "CNBC / Tradeweb quote feed",
-      "explanation": "A high 10-year Treasury yield competes with equities and raises financing and valuation pressure on long-duration growth stocks."
+      "explanation": "5.000% (+5.3 bp vs prev close). The 10-year nominal yield is rising; higher long-term discount rates generally pressure long-duration technology valuations. At the current reading NasBoard treats this factor as a headwind for Nasdaq."
     },
     {
       "factor": "Semiconductor leadership",
@@ -68,16 +68,16 @@
       "signal": "mixed",
       "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC quotes; calculation suppressed when only previous-close data are available",
-      "explanation": "Semiconductors are a key Nasdaq leadership group. Broad participation by major AI and compute names is supportive when it persists relative to QQQ."
+      "explanation": "Awaiting current-session equity quotes — latest equity stamp 2026-09-18. Semiconductors are currently awaiting session. Because chips are a major Nasdaq/AI leadership group, relative strength versus QQQ is a useful confirmation of risk appetite. The present reading is neutral/mixed."
     },
     {
       "factor": "Economic / inflation data",
       "latest": "Next: JOLTS (Aug) · Sep 29, 10:00 ET",
       "direction": "Scheduled",
       "signal": "mixed",
-      "freshness": "Official calendar · checked 2026-09-19 02:14 ET",
+      "freshness": "Official calendar · checked 2026-09-19 02:20 ET",
       "source": "BLS official release calendar",
-      "explanation": "Upside inflation surprises can push expected rates and yields higher; softer inflation without a sharp growth deterioration is generally more supportive for Nasdaq valuations."
+      "explanation": "Next: JOLTS (Aug) · Sep 29, 10:00 ET. This is the next scheduled macro release capable of changing inflation/growth expectations, Treasury yields and the expected Fed path. Event status is scheduled, so NasBoard currently treats the factor as neutral/mixed."
     },
     {
       "factor": "Market breadth",
@@ -86,7 +86,7 @@
       "signal": "mixed",
       "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC quotes; Nasdaq-100 constituent breadth; calculation suppressed outside current equity session",
-      "explanation": "A rally supported by a larger share of Nasdaq stocks is healthier than one carried by only a few mega-cap names."
+      "explanation": "Awaiting current-session quotes for Nasdaq-100 breadth. Breadth is awaiting session. A larger share of advancing Nasdaq-100 constituents indicates wider participation, while weak participation makes index strength less robust. NasBoard currently reads breadth as neutral/mixed."
     },
     {
       "factor": "Earnings revisions",
@@ -95,7 +95,7 @@
       "signal": "positive",
       "freshness": "Research snapshot",
       "source": "Company guidance / public earnings research",
-      "explanation": "Upward earnings revisions can offset valuation pressure by improving the earnings denominator supporting equity prices."
+      "explanation": "Current reading: Technology earnings expectations remain constructive. Direction: Constructive. NasBoard currently classifies this factor as supportive. This row will become more specific as its underlying live/research source is automated."
     },
     {
       "factor": "AI capex / monetization",
@@ -104,7 +104,7 @@
       "signal": "positive",
       "freshness": "Research snapshot",
       "source": "Company earnings releases and filings",
-      "explanation": "Sustained AI infrastructure spending supports semiconductor, networking and data-center demand, while monetization determines how durable that spending cycle becomes."
+      "explanation": "Current reading: Large-platform AI infrastructure spending remains strong. Direction: Strong. NasBoard currently classifies this factor as supportive. This row will become more specific as its underlying live/research source is automated."
     },
     {
       "factor": "2Y Treasury yield",
@@ -113,7 +113,7 @@
       "signal": "negative",
       "freshness": "CNBC intraday · 2026-09-18T17:05:00.000-0400",
       "source": "CNBC / Tradeweb quote feed",
-      "explanation": "The 2-year yield is particularly sensitive to expected Federal Reserve policy and provides a useful confirmation of changes in the expected rate path."
+      "explanation": "4.756% (+6.6 bp vs prev close). The 2-year yield is rising and is especially sensitive to expected Fed policy. Its current level/move is classified as a headwind; falling front-end yields generally ease rate pressure on growth stocks, while rising yields do the opposite."
     },
     {
       "factor": "Nasdaq volatility (VXN / VIX)",
@@ -122,7 +122,7 @@
       "signal": "positive",
       "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC / Cboe quotes",
-      "explanation": "Rising implied volatility indicates greater expected market movement and often accompanies risk reduction; falling volatility is generally more supportive."
+      "explanation": "VXN 19.29 (-3.36%) | VIX 14.81 (-4.08%). VXN measures Nasdaq-100 implied volatility and VIX provides broader-market confirmation. Volatility is currently falling; falling implied volatility usually means less demand for protection and is supportive, while rising volatility is a risk-off warning. Current signal: supportive."
     },
     {
       "factor": "Mega-cap leadership",
@@ -131,7 +131,7 @@
       "signal": "mixed",
       "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC quotes; calculation suppressed outside current equity session",
-      "explanation": "Because mega-cap technology companies carry large Nasdaq weights, synchronized strength or weakness can materially influence the index."
+      "explanation": "Awaiting current-session mega-cap quotes. The mega-cap basket is awaiting session. Nasdaq is more durable when its largest weights participate rather than the index being carried by a narrow subset; this reading is currently neutral/mixed."
     },
     {
       "factor": "Credit conditions",
@@ -140,7 +140,7 @@
       "signal": "mixed",
       "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC quotes; HYG high-yield ETF vs LQD investment-grade ETF proxy",
-      "explanation": "Widening credit spreads can signal tighter financial conditions and rising risk aversion. Stable credit reduces that source of pressure."
+      "explanation": "HYG -0.24% | LQD -0.44% | HYG vs LQD +0.20 pp. HYG versus LQD is used as a liquid credit-risk proxy: stronger high-yield performance relative to investment grade suggests easier/risk-on conditions, while underperformance suggests tightening. Conditions are currently stable, making credit neutral/mixed."
     },
     {
       "factor": "U.S. Dollar (DXY)",
@@ -149,7 +149,7 @@
       "signal": "mixed",
       "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC / ICE quote feed",
-      "explanation": "A stronger dollar can pressure the translated overseas revenue of multinational technology companies and often coincides with tighter global financial conditions."
+      "explanation": "DXY 100.215 (-0.03% vs prev close). The dollar is falling. A rapidly strengthening dollar can tighten global financial conditions and pressure multinational technology earnings; a weaker dollar tends to reduce that pressure. Current Nasdaq implication: neutral/mixed."
     },
     {
       "factor": "Oil (WTI / Brent)",
@@ -158,7 +158,7 @@
       "signal": "positive",
       "freshness": "CNBC intraday · 2026-09-19T18:08:23.000-0400",
       "source": "CNBC futures quotes",
-      "explanation": "Oil matters primarily through inflation expectations, consumer purchasing power and its potential influence on the Federal Reserve rate path."
+      "explanation": "WTI $99.53 (-2.34%) | Brent $103.87 (+0.00%). Oil is falling. Large oil moves can alter inflation expectations and therefore bond yields/Fed expectations; rising energy prices are a potential inflation-rate headwind for growth stocks. NasBoard currently classifies this as supportive."
     },
     {
       "factor": "System liquidity",
@@ -167,16 +167,16 @@
       "signal": "mixed",
       "freshness": "Official data lag",
       "source": "Federal Reserve balance sheet / U.S. Treasury data",
-      "explanation": "Changes in reserves, the Treasury General Account and Federal Reserve balance sheet can alter financial-system liquidity, but these series do not update tick-by-tick."
+      "explanation": "Current reading: Neutral initial assessment. Direction: Neutral. NasBoard currently classifies this factor as neutral/mixed. This row will become more specific as its underlying live/research source is automated."
     },
     {
       "factor": "Options positioning / sentiment",
       "latest": "Equity P/C 0.58 | 5D avg 0.60 | → stable | Index 0.98 | Total 0.81",
       "direction": "Balanced",
       "signal": "mixed",
-      "freshness": "Cboe daily · latest session 2026-09-18 · checked 2026-09-19 02:14 ET",
+      "freshness": "Cboe daily · latest session 2026-09-18 · checked 2026-09-19 02:20 ET",
       "source": "Cboe Daily Market Statistics — 5-session equity put/call trend; index/total context; not dealer gamma exposure",
-      "explanation": "Put/call ratios measure options-volume positioning. Equity put/call is used as the primary directional sentiment input; index put/call can be heavily influenced by institutional hedging. Rising put/call generally indicates more defensive positioning, while falling put/call indicates more call-heavy positioning. This is not a dealer-gamma exposure measure."
+      "explanation": "Equity P/C 0.58 | 5D avg 0.60 | → stable | Index 0.98 | Total 0.81. Equity put/call is compared with its 5-session baseline to distinguish an isolated reading from a positioning shift; Index and Total P/C provide context because index puts often reflect institutional hedging. Positioning is balanced and currently neutral/mixed; this is not a dealer-gamma measure."
     },
     {
       "factor": "AI / data-center financing",
@@ -185,7 +185,7 @@
       "signal": "negative",
       "freshness": "Research snapshot",
       "source": "Company filings / credit and financing research",
-      "explanation": "AI infrastructure requires substantial capital. Higher rates increase financing costs even while underlying compute demand remains strong."
+      "explanation": "Current reading: Higher borrowing costs are a financing headwind. Direction: Tighter. NasBoard currently classifies this factor as a headwind. This row will become more specific as its underlying live/research source is automated."
     },
     {
       "factor": "Technology earnings calendar",
@@ -194,7 +194,7 @@
       "signal": "mixed",
       "freshness": "Verified research snapshot",
       "source": "Company investor-relations announcements",
-      "explanation": "Major technology earnings can temporarily outweigh macro signals. Upcoming events are shown with exact dates only after verification against company investor-relations material."
+      "explanation": "Current reading: Micron (MU): Sep 30, 2026; earlier Sep reports include AVGO Sep 2, ORCL Sep 10 and ADBE Sep 10. Direction: Event risk. NasBoard currently classifies this factor as neutral/mixed. This row will become more specific as its underlying live/research source is automated."
     }
   ]
 }
