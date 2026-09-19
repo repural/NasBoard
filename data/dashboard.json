@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 18, 2026 · 16:05 ET",
+  "updatedET": "Sep 19, 2026 · 01:31 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -36,11 +36,11 @@
   "rows": [
     {
       "factor": "Fed path / rate expectations",
-      "latest": "Fed target 3.75–4.00%; further-hike risk remains elevated",
-      "direction": "Hawkish",
-      "signal": "negative",
-      "freshness": "Initial snapshot",
-      "source": "Federal Reserve / market-implied expectations",
+      "latest": "Next Fed catalyst: FOMC Minutes (Sep 15–16 meeting) · Oct 07, 14:00 ET",
+      "direction": "Event risk",
+      "signal": "mixed",
+      "freshness": "Federal Reserve calendar · checked 2026-09-19 01:31 ET",
+      "source": "Federal Reserve FOMC calendar; market-implied rate probabilities not yet connected",
       "explanation": "Higher expected policy rates increase the discount rate applied to growth-company cash flows and are therefore a Nasdaq valuation headwind."
     },
     {
@@ -54,38 +54,38 @@
     },
     {
       "factor": "10Y nominal yield",
-      "latest": "5.006% (+5.9 bp vs prev close)",
+      "latest": "5.000% (+5.3 bp vs prev close)",
       "direction": "Rising",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T16:04:42.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T17:05:00.000-0400",
       "source": "CNBC / Tradeweb quote feed",
       "explanation": "A high 10-year Treasury yield competes with equities and raises financing and valuation pressure on long-duration growth stocks."
     },
     {
       "factor": "Semiconductor leadership",
-      "latest": "NVDA +1.34% | AMD +2.70% | AVGO +2.97% | TSM +1.02% | QQQ +0.63% | basket vs QQQ +1.38 pp",
-      "direction": "Leading QQQ",
-      "signal": "positive",
-      "freshness": "CNBC intraday · 2026-09-18T16:00:00.000-0400",
-      "source": "CNBC quotes; equal-weight NVDA/AMD/AVGO/TSM vs QQQ calculation",
+      "latest": "Awaiting current-session equity quotes — latest equity stamp 2026-09-18",
+      "direction": "Awaiting session",
+      "signal": "mixed",
+      "freshness": "CNBC previous close · 2026-09-18",
+      "source": "CNBC quotes; calculation suppressed when only previous-close data are available",
       "explanation": "Semiconductors are a key Nasdaq leadership group. Broad participation by major AI and compute names is supportive when it persists relative to QQQ."
     },
     {
       "factor": "Economic / inflation data",
-      "latest": "Inflation and growth remain important rate catalysts",
-      "direction": "Rate-sensitive",
-      "signal": "negative",
-      "freshness": "Initial snapshot",
-      "source": "BLS / BEA / Federal Reserve",
+      "latest": "Next: JOLTS (Aug) · Sep 29, 10:00 ET",
+      "direction": "Scheduled",
+      "signal": "mixed",
+      "freshness": "Official calendar · checked 2026-09-19 01:31 ET",
+      "source": "BLS official release calendar",
       "explanation": "Upside inflation surprises can push expected rates and yields higher; softer inflation without a sharp growth deterioration is generally more supportive for Nasdaq valuations."
     },
     {
       "factor": "Market breadth",
-      "latest": "Nasdaq-100 breadth: 44/102 advancing (43%) · 58 declining · 0 flat",
-      "direction": "Mixed",
+      "latest": "Awaiting current-session quotes for Nasdaq-100 breadth",
+      "direction": "Awaiting session",
       "signal": "mixed",
-      "freshness": "CNBC intraday · 2026-09-18T16:00:00.000-0400",
-      "source": "CNBC quotes; Nasdaq-100 constituent day breadth",
+      "freshness": "CNBC previous close · 2026-09-18",
+      "source": "CNBC quotes; Nasdaq-100 constituent breadth; calculation suppressed outside current equity session",
       "explanation": "A rally supported by a larger share of Nasdaq stocks is healthier than one carried by only a few mega-cap names."
     },
     {
@@ -108,29 +108,29 @@
     },
     {
       "factor": "2Y Treasury yield",
-      "latest": "4.760% (+7.0 bp vs prev close)",
+      "latest": "4.756% (+6.6 bp vs prev close)",
       "direction": "Rising",
       "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T16:04:46.000-0400",
+      "freshness": "CNBC intraday · 2026-09-18T17:05:00.000-0400",
       "source": "CNBC / Tradeweb quote feed",
       "explanation": "The 2-year yield is particularly sensitive to expected Federal Reserve policy and provides a useful confirmation of changes in the expected rate path."
     },
     {
       "factor": "Nasdaq volatility (VXN / VIX)",
-      "latest": "VXN 19.38 (-2.91%) | VIX 14.82 (-4.02%)",
+      "latest": "VXN 19.29 (-3.36%) | VIX 14.81 (-4.08%)",
       "direction": "Falling",
       "signal": "positive",
-      "freshness": "CNBC intraday · 2026-09-18T15:50:02.000-0400",
+      "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC / Cboe quotes",
       "explanation": "Rising implied volatility indicates greater expected market movement and often accompanies risk reduction; falling volatility is generally more supportive."
     },
     {
       "factor": "Mega-cap leadership",
-      "latest": "7-stock basket -0.15% | 3/7 positive | QQQ +0.63% | relative -0.78 pp",
-      "direction": "Lagging QQQ",
-      "signal": "negative",
-      "freshness": "CNBC intraday · 2026-09-18T16:00:00.000-0400",
-      "source": "CNBC quotes; equal-weight AAPL/MSFT/AMZN/GOOGL/META/NVDA/TSLA basket vs QQQ",
+      "latest": "Awaiting current-session mega-cap quotes",
+      "direction": "Awaiting session",
+      "signal": "mixed",
+      "freshness": "CNBC previous close · 2026-09-18",
+      "source": "CNBC quotes; calculation suppressed outside current equity session",
       "explanation": "Because mega-cap technology companies carry large Nasdaq weights, synchronized strength or weakness can materially influence the index."
     },
     {
@@ -138,25 +138,25 @@
       "latest": "HYG -0.24% | LQD -0.44% | HYG vs LQD +0.20 pp",
       "direction": "Stable",
       "signal": "mixed",
-      "freshness": "CNBC intraday · 2026-09-18T16:00:00.000-0400",
+      "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC quotes; HYG high-yield ETF vs LQD investment-grade ETF proxy",
       "explanation": "Widening credit spreads can signal tighter financial conditions and rising risk aversion. Stable credit reduces that source of pressure."
     },
     {
       "factor": "U.S. Dollar (DXY)",
-      "latest": "DXY 100.195 (-0.05% vs prev close)",
+      "latest": "DXY 100.215 (-0.03% vs prev close)",
       "direction": "Falling",
       "signal": "mixed",
-      "freshness": "CNBC intraday · 2026-09-18T16:05:05.000-0400",
+      "freshness": "CNBC previous close · 2026-09-18",
       "source": "CNBC / ICE quote feed",
       "explanation": "A stronger dollar can pressure the translated overseas revenue of multinational technology companies and often coincides with tighter global financial conditions."
     },
     {
       "factor": "Oil (WTI / Brent)",
-      "latest": "WTI $99.65 (-2.22%) | Brent $103.20 (-1.55%)",
+      "latest": "WTI $99.53 (-2.34%) | Brent $103.87 (+0.00%)",
       "direction": "Falling",
       "signal": "positive",
-      "freshness": "CNBC intraday · 2026-09-18T15:54:45.000-0400",
+      "freshness": "CNBC intraday · 2026-09-19T18:08:23.000-0400",
       "source": "CNBC futures quotes",
       "explanation": "Oil matters primarily through inflation expectations, consumer purchasing power and its potential influence on the Federal Reserve rate path."
     },
