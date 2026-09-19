@@ -1,5 +1,5 @@
 {
-  "updatedET": "Sep 19, 2026 · 01:35 ET",
+  "updatedET": "Sep 19, 2026 · 02:14 ET",
   "nextUpdateET": "09:30 / 10:30 ET on trading weekdays",
   "groups": [
     {
@@ -39,7 +39,7 @@
       "latest": "Next Fed catalyst: FOMC Minutes (Sep 15–16 meeting) · Oct 07, 14:00 ET",
       "direction": "Event risk",
       "signal": "mixed",
-      "freshness": "Federal Reserve calendar · checked 2026-09-19 01:35 ET",
+      "freshness": "Federal Reserve calendar · checked 2026-09-19 02:14 ET",
       "source": "Federal Reserve FOMC calendar; market-implied rate probabilities not yet connected",
       "explanation": "Higher expected policy rates increase the discount rate applied to growth-company cash flows and are therefore a Nasdaq valuation headwind."
     },
@@ -75,7 +75,7 @@
       "latest": "Next: JOLTS (Aug) · Sep 29, 10:00 ET",
       "direction": "Scheduled",
       "signal": "mixed",
-      "freshness": "Official calendar · checked 2026-09-19 01:35 ET",
+      "freshness": "Official calendar · checked 2026-09-19 02:14 ET",
       "source": "BLS official release calendar",
       "explanation": "Upside inflation surprises can push expected rates and yields higher; softer inflation without a sharp growth deterioration is generally more supportive for Nasdaq valuations."
     },
@@ -171,11 +171,11 @@
     },
     {
       "factor": "Options positioning / sentiment",
-      "latest": "Equity P/C 0.58 | Index P/C 0.98 | Total P/C 0.81",
+      "latest": "Equity P/C 0.58 | 5D avg 0.60 | → stable | Index 0.98 | Total 0.81",
       "direction": "Balanced",
       "signal": "mixed",
-      "freshness": "Cboe daily · checked 2026-09-19 01:35 ET",
-      "source": "Cboe Daily Market Statistics — options volume put/call ratios; not dealer gamma exposure",
+      "freshness": "Cboe daily · latest session 2026-09-18 · checked 2026-09-19 02:14 ET",
+      "source": "Cboe Daily Market Statistics — 5-session equity put/call trend; index/total context; not dealer gamma exposure",
       "explanation": "Put/call ratios measure options-volume positioning. Equity put/call is used as the primary directional sentiment input; index put/call can be heavily influenced by institutional hedging. Rising put/call generally indicates more defensive positioning, while falling put/call indicates more call-heavy positioning. This is not a dealer-gamma exposure measure."
     },
     {
