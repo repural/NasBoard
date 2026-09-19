@@ -170,13 +170,13 @@
       "explanation": "Changes in reserves, the Treasury General Account and Federal Reserve balance sheet can alter financial-system liquidity, but these series do not update tick-by-tick."
     },
     {
-      "factor": "Positioning / dealer gamma",
+      "factor": "Options positioning / sentiment",
       "latest": "Equity P/C 0.58 | Index P/C 0.98 | Total P/C 0.81",
       "direction": "Balanced",
       "signal": "mixed",
       "freshness": "Cboe daily · checked 2026-09-19 01:35 ET",
       "source": "Cboe Daily Market Statistics — options volume put/call ratios; not dealer gamma exposure",
-      "explanation": "Dealer positioning can amplify or dampen intraday index moves. NasBoard will keep this neutral rather than invent a signal when reliable free positioning data are unavailable."
+      "explanation": "Put/call ratios measure options-volume positioning. Equity put/call is used as the primary directional sentiment input; index put/call can be heavily influenced by institutional hedging. Rising put/call generally indicates more defensive positioning, while falling put/call indicates more call-heavy positioning. This is not a dealer-gamma exposure measure."
     },
     {
       "factor": "AI / data-center financing",
