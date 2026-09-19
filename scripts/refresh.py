@@ -1,4 +1,4 @@
-import json, urllib.request, urllib.parse, datetime, os, xml.etree.ElementTree as ET
+import json, urllib.request, urllib.parse, datetime, os, re, xml.etree.ElementTree as ET
 from zoneinfo import ZoneInfo
 
 ROOT=os.path.dirname(os.path.dirname(__file__))
@@ -54,6 +54,23 @@ def treasury_10y_real(year):
             except: pass
     if not points: raise ValueError('Treasury TC_10YEAR real yield not found in XML feed')
     points.sort(); return points[-1]
+
+def cboe_put_call():
+    url='https://www.cboe.com/markets/us/options/market-statistics/daily'
+    req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'text/html,*/*'})
+    with urllib.request.urlopen(req,timeout=20) as r: html=r.read().decode('utf-8',errors='replace')
+    # Cboe renders ratio labels and values in the public daily-statistics HTML.
+    labels={
+      'total':r'TOTAL PUT/CALL RATIO',
+      'index':r'INDEX PUT/CALL RATIO',
+      'equity':r'EQUITY PUT/CALL RATIO'
+    }
+    out={}
+    for k,label in labels.items():
+        m=re.search(label+r'.{0,500}?([0-9]+\.[0-9]+)',html,re.I|re.S)
+        if not m: raise ValueError('Cboe '+k+' put/call ratio not found')
+        out[k]=float(m.group(1))
+    return out
 
 def main():
     with open(PATH,encoding='utf-8') as f:d=json.load(f)
@@ -149,6 +166,24 @@ def main():
         print('CNBC refresh failed:',repr(e))
         for name in ('10Y nominal yield','2Y Treasury yield','Semiconductor leadership','Nasdaq volatility (VXN / VIX)','U.S. Dollar (DXY)','Oil (WTI / Brent)'):
             next(x for x in rows if x['factor']==name)['freshness']='STALE — CNBC refresh failed'
+
+    # Official Cboe options-volume put/call ratios. This is sentiment/positioning, not dealer gamma exposure.
+    try:
+        pc=cboe_put_call()
+        eq,ix,tot=pc['equity'],pc['index'],pc['total']
+        # Equity P/C is the cleaner directional-sentiment component; index flow is often institutional hedging.
+        sig='negative' if eq>=0.90 else ('positive' if eq<=0.55 else 'mixed')
+        direction='Defensive / put-heavy' if eq>=0.90 else ('Call-heavy' if eq<=0.55 else 'Balanced')
+        setrow(rows,'Positioning / dealer gamma',
+          f'Equity P/C {eq:.2f} | Index P/C {ix:.2f} | Total P/C {tot:.2f}',
+          direction,sig,
+          f'Cboe daily · checked {now.strftime("%Y-%m-%d %H:%M ET")}',
+          'Cboe Daily Market Statistics — options volume put/call ratios; not dealer gamma exposure')
+    except Exception as e:
+        print('Cboe put/call refresh failed:',repr(e))
+        r=next(x for x in rows if x['factor']=='Positioning / dealer gamma')
+        r['freshness']='STALE — Cboe put/call refresh failed'
+        r['source']='Cboe Daily Market Statistics — options volume put/call ratios'
 
     # Scheduled macro/Fed event risk from official 2026 calendars. This is event timing, not a market-implied probability model.
     events=[
