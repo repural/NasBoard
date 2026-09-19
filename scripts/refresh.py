@@ -55,22 +55,32 @@ def treasury_10y_real(year):
     if not points: raise ValueError('Treasury TC_10YEAR real yield not found in XML feed')
     points.sort(); return points[-1]
 
-def cboe_put_call():
+def cboe_put_call(day=None):
     url='https://www.cboe.com/markets/us/options/market-statistics/daily'
+    if day is not None: url += '?dt='+day.isoformat()
     req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Accept':'text/html,*/*'})
     with urllib.request.urlopen(req,timeout=20) as r: html=r.read().decode('utf-8',errors='replace')
-    # Cboe renders ratio labels and values in the public daily-statistics HTML.
-    labels={
-      'total':r'TOTAL PUT/CALL RATIO',
-      'index':r'INDEX PUT/CALL RATIO',
-      'equity':r'EQUITY PUT/CALL RATIO'
-    }
+    labels={'total':r'TOTAL PUT/CALL RATIO','index':r'INDEX PUT/CALL RATIO','equity':r'EQUITY PUT/CALL RATIO'}
     out={}
     for k,label in labels.items():
         m=re.search(label+r'.{0,500}?([0-9]+\.[0-9]+)',html,re.I|re.S)
         if not m: raise ValueError('Cboe '+k+' put/call ratio not found')
         out[k]=float(m.group(1))
     return out
+
+def cboe_put_call_5d(now):
+    vals=[]; day=now.date(); attempts=0
+    while len(vals)<5 and attempts<12:
+        attempts+=1
+        if day.weekday()<5:
+            try:
+                x=cboe_put_call(day)
+                vals.append((day,x))
+            except Exception:
+                pass
+        day-=datetime.timedelta(days=1)
+    if len(vals)<5: raise ValueError('Fewer than 5 Cboe trading sessions available')
+    return vals
 
 def main():
     with open(PATH,encoding='utf-8') as f:d=json.load(f)
@@ -169,16 +179,26 @@ def main():
 
     # Official Cboe options-volume put/call ratios. This is sentiment/positioning, not dealer gamma exposure.
     try:
-        pc=cboe_put_call()
-        eq,ix,tot=pc['equity'],pc['index'],pc['total']
-        # Equity P/C is the cleaner directional-sentiment component; index flow is often institutional hedging.
-        sig='negative' if eq>=0.90 else ('positive' if eq<=0.55 else 'mixed')
-        direction='Defensive / put-heavy' if eq>=0.90 else ('Call-heavy' if eq<=0.55 else 'Balanced')
+        hist=cboe_put_call_5d(now)
+        day,pc=hist[0]; eq,ix,tot=pc['equity'],pc['index'],pc['total']
+        avg=sum(x['equity'] for _,x in hist)/len(hist)
+        delta=eq-avg
+        trend='↑ defensive' if delta>=0.08 else ('↓ call-heavy' if delta<=-0.08 else '→ stable')
+        # Level is primary; deviation from the 5-session average adjusts borderline readings.
+        score=0
+        if eq>=0.90: score-=2
+        elif eq>=0.75: score-=1
+        elif eq<=0.50: score+=2
+        elif eq<=0.60: score+=1
+        if delta>=0.08: score-=1
+        elif delta<=-0.08: score+=1
+        sig='positive' if score>=2 else ('negative' if score<=-2 else 'mixed')
+        direction='Defensive / put-heavy' if score<=-2 else ('Call-heavy' if score>=2 else 'Balanced')
         setrow(rows,'Options positioning / sentiment',
-          f'Equity P/C {eq:.2f} | Index P/C {ix:.2f} | Total P/C {tot:.2f}',
+          f'Equity P/C {eq:.2f} | 5D avg {avg:.2f} | {trend} | Index {ix:.2f} | Total {tot:.2f}',
           direction,sig,
-          f'Cboe daily · checked {now.strftime("%Y-%m-%d %H:%M ET")}',
-          'Cboe Daily Market Statistics — options volume put/call ratios; not dealer gamma exposure')
+          f'Cboe daily · latest session {day.isoformat()} · checked {now.strftime("%Y-%m-%d %H:%M ET")}',
+          'Cboe Daily Market Statistics — 5-session equity put/call trend; index/total context; not dealer gamma exposure')
     except Exception as e:
         print('Cboe put/call refresh failed:',repr(e))
         r=next(x for x in rows if x['factor']=='Options positioning / sentiment')
