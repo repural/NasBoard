@@ -36,8 +36,43 @@ def is_intraday(q,now):
     t=str(q.get('last_time') or q.get('last_timedate') or '')
     return len(t)>10 and t[:10]==now.strftime('%Y-%m-%d')
 
-def setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed'):
+def setrow(rows,name,latest,direction,signal,freshness,source='CNBC quote feed',explanation=None):
     r=next(x for x in rows if x['factor']==name); r.update(latest=latest,direction=direction,signal=signal,freshness=freshness,source=source)
+    if explanation is not None: r['explanation']=explanation
+
+def explain_current_rows(rows):
+    # Contextual explanations are regenerated from each row's current values/signal on every refresh.
+    for r in rows:
+        n=r['factor']; x=r.get('latest',''); d=r.get('direction',''); sig=r.get('signal','mixed')
+        tone={'positive':'supportive','negative':'a headwind','mixed':'neutral/mixed'}.get(sig,'neutral/mixed')
+        if n=='10Y nominal yield':
+            r['explanation']=f'{x}. The 10-year nominal yield is {d.lower()}; higher long-term discount rates generally pressure long-duration technology valuations. At the current reading NasBoard treats this factor as {tone} for Nasdaq.'
+        elif n=='2Y Treasury yield':
+            r['explanation']=f'{x}. The 2-year yield is {d.lower()} and is especially sensitive to expected Fed policy. Its current level/move is classified as {tone}; falling front-end yields generally ease rate pressure on growth stocks, while rising yields do the opposite.'
+        elif n=='10Y real yield':
+            r['explanation']=f'{x}. This is the inflation-adjusted long-term discount rate. A real yield at the current level is classified as {d.lower()} and {tone} for long-duration Nasdaq valuations because future earnings are discounted at a higher real rate.'
+        elif n=='Semiconductor leadership':
+            r['explanation']=f'{x}. Semiconductors are currently {d.lower()}. Because chips are a major Nasdaq/AI leadership group, relative strength versus QQQ is a useful confirmation of risk appetite. The present reading is {tone}.'
+        elif n=='Mega-cap leadership':
+            r['explanation']=f'{x}. The mega-cap basket is {d.lower()}. Nasdaq is more durable when its largest weights participate rather than the index being carried by a narrow subset; this reading is currently {tone}.'
+        elif n=='Market breadth':
+            r['explanation']=f'{x}. Breadth is {d.lower()}. A larger share of advancing Nasdaq-100 constituents indicates wider participation, while weak participation makes index strength less robust. NasBoard currently reads breadth as {tone}.'
+        elif n=='Nasdaq volatility (VXN / VIX)':
+            r['explanation']=f'{x}. VXN measures Nasdaq-100 implied volatility and VIX provides broader-market confirmation. Volatility is currently {d.lower()}; falling implied volatility usually means less demand for protection and is supportive, while rising volatility is a risk-off warning. Current signal: {tone}.'
+        elif n=='Credit conditions':
+            r['explanation']=f'{x}. HYG versus LQD is used as a liquid credit-risk proxy: stronger high-yield performance relative to investment grade suggests easier/risk-on conditions, while underperformance suggests tightening. Conditions are currently {d.lower()}, making credit {tone}.'
+        elif n=='U.S. Dollar (DXY)':
+            r['explanation']=f'{x}. The dollar is {d.lower()}. A rapidly strengthening dollar can tighten global financial conditions and pressure multinational technology earnings; a weaker dollar tends to reduce that pressure. Current Nasdaq implication: {tone}.'
+        elif n=='Oil (WTI / Brent)':
+            r['explanation']=f'{x}. Oil is {d.lower()}. Large oil moves can alter inflation expectations and therefore bond yields/Fed expectations; rising energy prices are a potential inflation-rate headwind for growth stocks. NasBoard currently classifies this as {tone}.'
+        elif n=='Options positioning / sentiment':
+            r['explanation']=f'{x}. Equity put/call is compared with its 5-session baseline to distinguish an isolated reading from a positioning shift; Index and Total P/C provide context because index puts often reflect institutional hedging. Positioning is {d.lower()} and currently {tone}; this is not a dealer-gamma measure.'
+        elif n=='Fed path / rate expectations':
+            r['explanation']=f'{x}. This row currently tracks the next scheduled Fed catalyst rather than market-implied cut/hike probabilities. The upcoming event creates policy-rate event risk for Nasdaq; current classification is {tone}.'
+        elif n=='Economic / inflation data':
+            r['explanation']=f'{x}. This is the next scheduled macro release capable of changing inflation/growth expectations, Treasury yields and the expected Fed path. Event status is {d.lower()}, so NasBoard currently treats the factor as {tone}.'
+        else:
+            r['explanation']=f'Current reading: {x}. Direction: {d}. NasBoard currently classifies this factor as {tone}. This row will become more specific as its underlying live/research source is automated.'
 
 def treasury_10y_real(year):
     url='https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_real_yield_curve&field_tdr_date_value='+str(year)
@@ -238,6 +273,7 @@ def main():
         print('Treasury real-yield refresh failed:',repr(e))
         real['freshness']='STALE — U.S. Treasury daily feed refresh failed'
         real['source']='U.S. Department of the Treasury — Daily Treasury Par Real Yield Curve Rates (10Y TIPS)'
+    explain_current_rows(rows)
     d['updatedET']=now.strftime('%b %d, %Y · %H:%M ET'); d['nextUpdateET']='09:30 / 10:30 ET on trading weekdays'
     with open(PATH,'w',encoding='utf-8') as f:json.dump(d,f,ensure_ascii=False,indent=2)
 
